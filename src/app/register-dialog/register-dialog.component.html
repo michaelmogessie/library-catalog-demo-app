@@ -1,0 +1,31 @@
+<mat-dialog-content>
+    <h2>Register:</h2>
+    <div class="email-div">
+        <mat-form-field appearance="fill" class="email">
+            <mat-label>Email:</mat-label>
+            <input matInput placeholder="pat@example.com" [formControl]="email" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="email">
+            <mat-label>First name:</mat-label>
+            <input matInput placeholder="Some" [formControl]="first_name" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="email">
+            <mat-label>Last name:</mat-label>
+            <input matInput placeholder="Body" [formControl]="last_name" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="email">
+            <mat-label>Password:</mat-label>
+            <input matInput placeholder="Password" [formControl]="password" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="email">
+            <mat-label>Confirm password:</mat-label>
+            <input matInput type="password" placeholder="Confirm password" [formControl]="confirm_password" required>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">CANCEL</button>
+    <button mat-button
+        [mat-dialog-close]="{'first_name': first_name.value, 'last_name': last_name.value, 'email': email.value, 'password': password.value}"
+        *ngIf="email.valid && first_name.valid && last_name.valid && password.valid && confirm_password.valid && password.value === confirm_password.value">REGISTER</button>
+</mat-dialog-actions>

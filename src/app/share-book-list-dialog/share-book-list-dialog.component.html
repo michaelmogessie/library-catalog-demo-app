@@ -1,0 +1,18 @@
+<mat-dialog-content>
+    <h2>Select the books you would like to share and provide an email address:</h2>
+    <mat-selection-list #books class="bookList" [(ngModel)]="selectedBooks">
+        <mat-list-option *ngFor="let book of data" [value]="book.id">
+            {{book.title}} by {{book.author}}
+        </mat-list-option>
+    </mat-selection-list>
+    <div class="email-div">
+        <mat-form-field appearance="fill" class="email">
+            <mat-label>Enter email to share your list with:</mat-label>
+            <input matInput placeholder="pat@example.com" [formControl]="email" required>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">CANCEL</button>
+    <button mat-button [mat-dialog-close]="{'ids': selectedBooks, 'share_with_email': email.value}" *ngIf="email.valid">SHARE</button>
+</mat-dialog-actions>
