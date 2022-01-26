@@ -5,23 +5,27 @@
       <mat-form-field appearance="fill">
         <mat-label>Enter your email</mat-label>
         <input matInput placeholder="pat@example.com" [formControl]="email" required>
-        <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field><br>
       <mat-form-field appearance="fill">
         <mat-label>Enter your password</mat-label>
         <input matInput type="password" [formControl]="password" required>
-        <mat-error *ngIf="password.invalid">{{getErrorMessage()}}</mat-error>
       </mat-form-field><br>
-      <button mat-button *ngIf="!password.invalid && !email.invalid" (click)="login()">Login</button>
+      <button mat-button (click)="login()">Login</button>
+      <div>No account yet? <a mat-button routerLink="." color="accent" (click)="register()">Register.</a></div>
     </mat-card>
   </div>
 </span>
 <span *ngIf="loggedIn">
+  <div class="right-aligned logout">
+    <button mat-flat-button (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon>
+    </button>
+  </div>
   <mat-accordion>
     <mat-expansion-panel *ngFor="let book of user.books">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <span class="bookTitle">{{book.title}} {{book.id}}</span>
+          <span class="bookTitle">{{book.title}}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-form-field appearance="fill" class="book-attribute">
@@ -36,7 +40,9 @@
 
       <mat-form-field appearance="fill" class="book-attribute">
         <mat-label>Purchased on</mat-label>
-        <input matInput [(ngModel)]="book.purchased_on">
+        <input readonly matInput [matDatepicker]="picker" [(ngModel)]="book.purchased_on">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="book-attribute">
@@ -54,10 +60,11 @@
       </div>
     </mat-expansion-panel>
     <div class="right-aligned">
-      <button mat-fab class="top-margin-medium right-margin-medium">
+      <button mat-mini-fab class="top-margin-medium right-margin-medium" (click)="newBook()">
         <mat-icon>add</mat-icon>
       </button>
-      <button mat-fab class="top-margin-medium right-margin-medium">
+      <button mat-mini-fab class="top-margin-medium right-margin-medium" (click)="shareBookList()"
+        *ngIf="user.books">
         <mat-icon>share</mat-icon>
       </button>
     </div>

@@ -8,10 +8,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { MaterialsModule } from './materials/materials.module';
+import { DeleteBookConfirmDialogComponent } from './delete-book-confirm-dialog/delete-book-confirm-dialog.component';
+import { ShareBookListDialogComponent } from './share-book-list-dialog/share-book-list-dialog.component';
+import { RegisterDialogComponent } from './register-dialog/register-dialog.component';
+import { LogoutConfirmDialogComponent } from './logout-confirm-dialog/logout-confirm-dialog.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DeleteBookConfirmDialogComponent,
+    ShareBookListDialogComponent,
+    RegisterDialogComponent,
+    LogoutConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
