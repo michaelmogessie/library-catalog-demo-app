@@ -13,6 +13,7 @@ import { ShareBookListDialogComponent } from './share-book-list-dialog/share-boo
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+const BASE_URL = "https://library-catalog-demo-app.herokuapp.com"
 
 export class AppComponent implements OnInit {
   title = 'library-catalog-demo-app';
@@ -26,14 +27,14 @@ export class AppComponent implements OnInit {
   email = new FormControl('', [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]);
   password = new FormControl('', [Validators.required]);
   ngOnInit(): void {
-    if(this.loggedIn) {
+    if (this.loggedIn) {
       this.user = JSON.parse(localStorage.getItem('user')!)
     }
   }
 
   login() {
     let credentials = { 'email': this.email.value, 'password': this.password.value }
-    this.http.post('http://localhost:8885/login', credentials, { observe: 'response' }).subscribe((response: any) => {
+    this.http.post(BASE_URL + '/login', credentials, { observe: 'response' }).subscribe((response: any) => {
       let user = response.body
       user.books = JSON.parse(user.books)
       this.user = user
@@ -59,7 +60,7 @@ export class AppComponent implements OnInit {
   }
 
   saveBook(theBook: any) {
-    this.http.post('http://localhost:8885/books/add', theBook, this.getRequestOptions()).subscribe((response: any) => {
+    this.http.post(BASE_URL + '/books/add', theBook, this.getRequestOptions()).subscribe((response: any) => {
       for (let book of this.user.books) {
         if (book.id == theBook.id) {
           book.title = theBook.title
@@ -98,7 +99,7 @@ export class AppComponent implements OnInit {
       if (confirmed) {
         let options: any = this.getRequestOptions()
         options.body = bookToDelete
-        this.http.delete('http://localhost:8885/books/remove', options).subscribe((response) => {
+        this.http.delete(BASE_URL + '/books/remove', options).subscribe((response) => {
           let index = 0
 
           for (let book of this.user.books) {
@@ -130,7 +131,7 @@ export class AppComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.post('http://localhost:8885/books/share', result, this.getRequestOptions()).subscribe((response) => {
+        this.http.post(BASE_URL + '/books/share', result, this.getRequestOptions()).subscribe((response) => {
           this._snackBar.open("Book list shared with " + result.share_with_email + ".", "OK", {
             duration: 3000
           });
@@ -162,7 +163,7 @@ export class AppComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.post('http://localhost:8885/register', result, this.getRequestOptions()).subscribe((response) => {
+        this.http.post(BASE_URL + '/register', result, this.getRequestOptions()).subscribe((response) => {
           this._snackBar.open("Success. Please check your email for verification link.", "OK", {
             duration: 3000
           });
@@ -182,7 +183,7 @@ export class AppComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        this.http.post('http://localhost:8885/logout', this.user, this.getRequestOptions()).subscribe((response) => {
+        this.http.post(BASE_URL + '/logout', this.user, this.getRequestOptions()).subscribe((response) => {
           this.user = {}
           localStorage.removeItem('user')
           localStorage.removeItem('auth_token')
