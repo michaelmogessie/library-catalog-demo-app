@@ -8,12 +8,13 @@ import { LogoutConfirmDialogComponent } from './logout-confirm-dialog/logout-con
 import { RegisterDialogComponent } from './register-dialog/register-dialog.component';
 import { ShareBookListDialogComponent } from './share-book-list-dialog/share-book-list-dialog.component';
 
+const BASE_URL = "https://library-catalog-demo-app.herokuapp.com"
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-const BASE_URL = "https://library-catalog-demo-app.herokuapp.com"
 
 export class AppComponent implements OnInit {
   title = 'library-catalog-demo-app';
