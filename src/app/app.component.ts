@@ -9,6 +9,7 @@ import { RegisterDialogComponent } from './register-dialog/register-dialog.compo
 import { ShareBookListDialogComponent } from './share-book-list-dialog/share-book-list-dialog.component';
 
 const BASE_URL = "https://library-catalog-demo-app.herokuapp.com"
+//const BASE_URL = "http://localhost:8885"
 
 @Component({
   selector: 'app-root',
@@ -47,21 +48,17 @@ export class AppComponent implements OnInit {
       });
     },
       (error) => {
-        if (error.status == 403) {
-          this._snackBar.open("Please veryify your email first.", "OK", {
-            duration: 3000
-          });
-        } else {
-          this._snackBar.open('Invalid email or password', 'OK', {
-            duration: 3000
-          });
-        }
+        this._snackBar.open(error.error, "OK", {
+          duration: 3000
+        });
       });
 
   }
 
   saveBook(theBook: any) {
     this.http.post(BASE_URL + '/books/add', theBook, this.getRequestOptions()).subscribe((response: any) => {
+      let savedBook = response.body
+      let newBook = true;
       for (let book of this.user.books) {
         if (book.id == theBook.id) {
           book.title = theBook.title
@@ -69,14 +66,20 @@ export class AppComponent implements OnInit {
           book.purchased_on = theBook.purchased_on
           book.notes = theBook.notes
           localStorage.setItem('user', this.user)
+          newBook = false;
+          break;
         }
+      }
+      if (newBook) {
+        this.user.books[0].id = savedBook.id
+        localStorage.setItem('user', this.user)
       }
       this._snackBar.open('Success', 'OK', {
         duration: 3000
       });
     },
       (error) => {
-        this._snackBar.open('Error, invalid book info.', 'OK', {
+        this._snackBar.open(error.error, "OK", {
           duration: 3000
         });
       });
@@ -100,6 +103,7 @@ export class AppComponent implements OnInit {
       if (confirmed) {
         let options: any = this.getRequestOptions()
         options.body = bookToDelete
+        options.responseType = 'text'
         this.http.delete(BASE_URL + '/books/remove', options).subscribe((response) => {
           let index = 0
 
@@ -116,7 +120,7 @@ export class AppComponent implements OnInit {
           });
         },
           (error) => {
-            this._snackBar.open("Error, couldn't remove book.", "OK", {
+            this._snackBar.open(error.error, "OK", {
               duration: 3000
             });
           });
@@ -132,13 +136,15 @@ export class AppComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.post(BASE_URL + '/books/share', result, this.getRequestOptions()).subscribe((response) => {
+        let options: any = this.getRequestOptions()
+        options.responseType = 'text'
+        this.http.post(BASE_URL + '/books/share', result, options).subscribe((response) => {
           this._snackBar.open("Book list shared with " + result.share_with_email + ".", "OK", {
             duration: 3000
           });
         },
           (error) => {
-            this._snackBar.open("Error, couldn't share book list with provided email.", "OK", {
+            this._snackBar.open(error.error, "OK", {
               duration: 3000
             });
           });
@@ -164,13 +170,15 @@ export class AppComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.http.post(BASE_URL + '/register', result, this.getRequestOptions()).subscribe((response) => {
+        let options: any = this.getRequestOptions()
+        options.responseType = 'text'
+        this.http.post(BASE_URL + '/register', result, options).subscribe((response) => {
           this._snackBar.open("Success. Please check your email for verification link.", "OK", {
             duration: 3000
           });
         },
           (error) => {
-            this._snackBar.open("Error, email address already taken or invalid.", "OK", {
+            this._snackBar.open(error.error, "OK", {
               duration: 3000
             });
           });
@@ -184,7 +192,9 @@ export class AppComponent implements OnInit {
     })
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        this.http.post(BASE_URL + '/logout', this.user, this.getRequestOptions()).subscribe((response) => {
+        let options: any = this.getRequestOptions()
+        options.responseType = 'text'
+        this.http.post(BASE_URL + '/logout', this.user, options).subscribe((response) => {
           this.user = {}
           localStorage.removeItem('user')
           localStorage.removeItem('auth_token')
@@ -194,8 +204,7 @@ export class AppComponent implements OnInit {
           });
         },
           (error) => {
-            console.table(error)
-            this._snackBar.open("Error, couldn't log you out.", "OK", {
+            this._snackBar.open(error.error, "OK", {
               duration: 3000
             });
           });
